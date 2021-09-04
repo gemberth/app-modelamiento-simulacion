@@ -111,7 +111,7 @@ def calcularCuadradosMedios():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
@@ -173,7 +173,7 @@ def calcularCongruencialLineal():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
@@ -234,7 +234,7 @@ def calcularCongruencialMultiplicativo():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
@@ -299,7 +299,7 @@ def calcularMediaModaMediana():
     # Tomamos los datos de las columnas
     df2 = datos[[columna]].describe()
     # describe(), nos presenta directamente la media, desviación standar, el valor mínimo, valor máximo, el 1er cuartil, 2do Cuartil, 3er Cuartil
-    data2 = df2.to_html(classes="table table-dark table-striped",
+    data2 = df2.to_html(classes="table table-hover table-striped",
                         justify="justify-all", border=0)
 
     return render_template('printMediaMedianaModa.html', data=data, data2=data2, image=plot_url)
@@ -375,7 +375,7 @@ def calcularPromedioMovil():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     """ writer = ExcelWriter(data)
@@ -450,7 +450,7 @@ def calcularSuavizacionExponencial():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
@@ -543,7 +543,7 @@ def calcularRegresionLineal():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
@@ -648,7 +648,7 @@ def calcularRegresionLinealCuadrada():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
@@ -744,7 +744,7 @@ def calcularMontecarlo():
 
     x2 = pd.DataFrame(x2)
 
-    data = x2.to_html(classes="table table-dark table-striped",
+    data = x2.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     def busqueda(arrmin, arrmax, valor):
@@ -793,7 +793,7 @@ def calcularMontecarlo():
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
     data2 = dfMCL.to_html(
-        classes="table table-dark table-striped", justify="justify-all", border=0)
+        classes="table table-hover table-striped", justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
     dfMCL.to_excel(writer, index=False)
@@ -906,7 +906,7 @@ def calcularSistemaInventario():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
-    data2 = dfQ.to_html(classes="table table-dark table-striped",
+    data2 = dfQ.to_html(classes="table table-hover table-striped",
                         justify="justify-all", border=0)
 
     def make_data(product, policy, periods):
@@ -1046,7 +1046,7 @@ def calcularSistemaInventario():
     df = make_data(producto, politica, num)
     df
 
-    data3 = df.to_html(classes="table table-dark table-striped",
+    data3 = df.to_html(classes="table table-hover table-striped",
                        justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
@@ -1122,7 +1122,7 @@ def calcularLineaEspera():
     df.loc[len(df)] = [landa, nu, p, Po, Lq, L, W, Wq, Pn]
     df
 
-    data = df.to_html(classes="table table-dark table-striped",
+    data = df.to_html(classes="table table-hover table-striped",
                       justify="justify-all", border=0)
 
     i = 0
@@ -1231,7 +1231,7 @@ def calcularLineaEspera():
     dfLE
 
     data2 = dfLE.to_html(
-        classes="table table-dark table-striped", justify="justify-all", border=0)
+        classes="table table-hover table-striped", justify="justify-all", border=0)
 
     """ writer = ExcelWriter("static/file/data.xlsx")
     dfLE.to_excel(writer, index=False)
@@ -1241,7 +1241,7 @@ def calcularLineaEspera():
 
     dfLE2 = pd.DataFrame(dfLE.describe())
     data3 = dfLE2.to_html(
-        classes="table table-dark table-striped", justify="justify-all", border=0)
+        classes="table table-hover table-striped", justify="justify-all", border=0)
 
     return render_template('printLineaEspera.html', data=data, data2=data2, data3=data3, image=plot_url)
 

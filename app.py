@@ -46,7 +46,7 @@ def printModelosSimulacion():
 def printModulosCompletos():
     return render_template('todoenuno.html')
 
-@app.route('/mediamm')
+@app.route('/unidadestadistica')
 def mediamm():
     return render_template('mediamm.html')
 

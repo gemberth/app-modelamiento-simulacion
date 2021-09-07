@@ -1,7 +1,8 @@
 from os import write
 import re
 from flask import Flask, render_template, request, send_file
-from matplotlib.pyplot import plot
+from matplotlib.pyplot import plot, text
+from matplotlib.text import Text
 from pandas.core.frame import DataFrame
 
 app = Flask(__name__)
@@ -248,9 +249,10 @@ def calcularCongruencialMultiplicativo():
 
 @app.route('/calcularMediaModaMediana', methods=['GET', 'POST'])
 def calcularMediaModaMediana():
-    columna = request.form.get("nombreColumna")
 
     file = request.files['file'].read()
+    tipoArch= request.form.get("tipoarchivo")
+    columna = request.form.get("nombreColumna")
 
     # importamos la libreria Pandas, matplotlib y numpy que van a ser de mucha utilidad para poder hacer gráficos
     import pandas as pd
@@ -264,7 +266,51 @@ def calcularMediaModaMediana():
     from pandas import DataFrame
 
     # leemos los datos de la tabla del directorio Data de trabajo
-    datos = pd.read_excel(file)
+    if tipoArch=='1':
+        
+        datos = pd.read_excel(file)
+        
+        
+    elif tipoArch=='2':
+        datos = pd.read_csv(io.StringIO(file.decode('utf-8')))
+        
+    elif tipoArch=='3':
+        datos = pd.read_json(file)
+
+    elif tipoArch=='4':
+        datos = pd.read_html(file)
+    elif tipoArch=='5':
+        datos = pd.read_clipboard(file)
+
+    elif tipoArch=='6':
+        datos = pd.read_feather(file)
+
+    elif tipoArch=='7':
+        datos = pd.read_fwf(file)
+
+    elif tipoArch=='8':
+        datos = pd.read_gbq(file)
+
+    elif tipoArch=='9':
+        datos = pd.read_parquet(file)
+
+    elif tipoArch=='10':
+        datos = pd.read_pickle(file)
+
+    elif tipoArch=='11':
+        datos = pd.read_msgpack(file)
+
+    elif tipoArch=='12':
+        datos = pd.read_sas(file)
+
+    elif tipoArch=='13':
+        datos = pd.read_sql(file)
+
+    elif tipoArch=='14':
+        datos = pd.read_sql_query(file)
+    elif tipoArch=='15':
+        datos = pd.read_sql_table(file)
+    
     # Presentamos los datos en un DataFrame de Pandas
     datos
 
@@ -318,6 +364,9 @@ def printPromedioMovil():
 @app.route('/calcularPromedioMovil', methods=['GET', 'POST'])
 def calcularPromedioMovil():
     file = request.files['file'].read()
+    tipoArch= request.form.get("tipoarchivo")
+    columna01 = request.form.get("tiempo")
+    columna02 = request.form.get("datos")
 
     import pandas as pd
     import numpy as np
@@ -333,11 +382,62 @@ def calcularPromedioMovil():
     # el DataFrame se llama movil
     # exporta = {'Año':[2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017],
     #           'Exportaciones':[5501.0, 6232.7, 8118.3, 10137.00, 10449.50, 12794.60, 9939.10, 13193.00, 16036.2, 18496.90, 18709.30, 19363.50, 16521.50, 15175.40, 16927.00]}
+    # *** Leer el archivo ***
+    if tipoArch=='1':
+        
+        file = pd.read_excel(file)
+        
+        
+    elif tipoArch=='2':
+        file = pd.read_csv(io.StringIO(file.decode('utf-8')))
+        
+    elif tipoArch=='3':
+        file = pd.read_json(file)
 
-    file = pd.read_excel(file)
-    name = file.columns
-    columna1 = name[0]
-    columna2 = name[1]
+    elif tipoArch=='4':
+        file = pd.read_html(file)
+    elif tipoArch=='5':
+        file = pd.read_clipboard(file)
+
+    elif tipoArch=='6':
+        file = pd.read_feather(file)
+
+    elif tipoArch=='7':
+        file = pd.read_fwf(file)
+
+    elif tipoArch=='8':
+        file = pd.read_gbq(file)
+
+    elif tipoArch=='9':
+        file = pd.read_parquet(file)
+
+    elif tipoArch=='10':
+        file = pd.read_pickle(file)
+
+    elif tipoArch=='11':
+        file = pd.read_msgpack(file)
+
+    elif tipoArch=='12':
+        file = pd.read_sas(file)
+
+    elif tipoArch=='13':
+        file = pd.read_sql(file)
+
+    elif tipoArch=='14':
+        file = pd.read_sql_query(file)
+    elif tipoArch=='15':
+        file = pd.read_sql_table(file)
+    
+    # name1=file[columna01]
+    # name2=file[columna02]
+
+    # name01 = name1.columns
+    # name02 = name2.columns
+    #lo qe nesesitaba era solo el nombre de la columna no los datos de la columna
+    columna1 = columna01
+    columna2 = columna02
+    # columna1 = file[columna01]
+    # columna2 = file[columna02]
     movil = pd.DataFrame(file)
     movil.head()
 
@@ -403,6 +503,13 @@ def imprimirSuavizacionExponencial():
 def calcularSuavizacionExponencial():
     file = request.files['file'].read()
 
+    
+    tipoArch= request.form.get("tipoarchivo")
+
+    columna01 = request.form.get("tiempo")
+    columna02 = request.form.get("datos")
+    alfaform = request.form.get("alfa", type=float)
+    int(alfaform)
     # Librerías
     import pandas as pd
     import numpy as np
@@ -416,14 +523,58 @@ def calcularSuavizacionExponencial():
     import base64
 
     # *** Leer el archivo ***
-    file = pd.read_excel(file)
+    if tipoArch=='1':
+        
+        file = pd.read_excel(file)
+        
+        
+    elif tipoArch=='2':
+        file = pd.read_csv(io.StringIO(file.decode('utf-8')))
+        
+    elif tipoArch=='3':
+        file = pd.read_json(file)
+
+    elif tipoArch=='4':
+        file = pd.read_html(file)
+    elif tipoArch=='5':
+        file = pd.read_clipboard(file)
+
+    elif tipoArch=='6':
+        file = pd.read_feather(file)
+
+    elif tipoArch=='7':
+        file = pd.read_fwf(file)
+
+    elif tipoArch=='8':
+        file = pd.read_gbq(file)
+
+    elif tipoArch=='9':
+        file = pd.read_parquet(file)
+
+    elif tipoArch=='10':
+        file = pd.read_pickle(file)
+
+    elif tipoArch=='11':
+        file = pd.read_msgpack(file)
+
+    elif tipoArch=='12':
+        file = pd.read_sas(file)
+
+    elif tipoArch=='13':
+        file = pd.read_sql(file)
+
+    elif tipoArch=='14':
+        file = pd.read_sql_query(file)
+    elif tipoArch=='15':
+        file = pd.read_sql_table(file)
+    
     movil = pd.DataFrame(file)
-    name = file.columns
-    columna1 = name[0]
-    columna2 = name[1]
+    # name = file.columns
+    columna1 = columna01
+    columna2 = columna02
 
     movil.head()
-    alfa = 0.1
+    alfa = alfaform
     unoalfa = 1. - alfa
     for i in range(0, movil.shape[0]-1):
         movil.loc[movil.index[i+1], 'SN'] = np.round(movil.iloc[i, 1], 1)

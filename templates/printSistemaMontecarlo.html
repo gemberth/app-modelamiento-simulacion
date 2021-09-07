@@ -7,52 +7,72 @@
 {% block content %}
 <legend class="text-center header">Montecarlo</legend><br>
 <div class="container">
-    <legend class="text-left header">Formulario</legend>
+    <br>
+    
+    <legend class="text-center header">Montecarlo</legend><br>
     <div class="card">
         <form enctype="multipart/form-data" method="POST" action="{{url_for('calcularMontecarlo')}}"><br>
             <div class="col-sm-12">
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
-                        <label for="exampleFormControlFile1">Subir el archivo en formato (excel, csv ,json, html etc..)</label>
+                        <label for="exampleFormControlFile1">Subir el archivo en formato (excel, csv ,json )</label>
+                        <!-- <a class="btn btn-warning float-right"
+                            href="{{url_for('static', filename='file/template4.xlsx')}}" role="button">Descargar
+                            plantilla</a> -->
                         <input name="file" type="file" class="form-control-file form-data" id="exampleFormControlFile1"
                             required>
                         <small id="passwordHelpBlock" class="form-text text-muted">
-                            El archivo Excel debe de contener dos columnas, una columna "Período" (ej: 2016, 2017, 2018,
-                            ...) y una columna "Promedio" que haga referencia al período en que se encuentra (ej:
-                            5501.0, 6232.7, 8118.3, ...). Puede descargar la plantilla de ejemplo dando clic en el botón
-                            "Descargar plantilla".
+                            Por favor especificar bien el nombre del campo que se encuentra en la tabla... 
                         </small>
                     </div>
-                </div>
-
-                <div class="form-row">
-                    <legend class="text-center header">Generador de números aleatorios Mediante el Método Congruencial lineal</legend><br>
                     <div class="col-md-6 mb-3">
-                        <label for="validationDefault01">Número iteraciones</label>
+                        <label for="validationDefault01">Ingrese el nombre de la columna X</label>
+                        <input name="x" type="text" class="form-control" id="validationDefault01"
+                            required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="validationDefault01">Ingrese el nombre de la columna Y</label>
+                        <input name="y" type="text" class="form-control" id="validationDefault01"
+                            required>
+                    </div>
+                </div>
+                <div class="form-row">
+
+                    <legend class="text-center header">Método congruencial lineal</legend><br>
+                    <div class="col-md-6 mb-3">
+                        <label for="validationDefault01">Número iteraciones (n)</label>
                         <input name="numeroIteraciones" type="number" class="form-control" id="validationDefault01"
                             required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="validationDefault02">Semilla</label>
+                        <label for="validationDefault02">Semilla (X0)</label>
                         <input name="semilla" type="number" class="form-control" id="validationDefault02" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="validationDefault01">Multiplicador</label>
+                        <label for="validationDefault01">Multiplicador (a)</label>
                         <input name="multiplicador" type="number" class="form-control" id="validationDefault01"
                             required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="validationDefault02">Incremento</label>
+                        <label for="validationDefault02">Incremento (c)</label>
                         <input name="incremento" type="number" class="form-control" id="validationDefault02" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="validationDefault01">Módulo</label>
+                        <label for="validationDefault01">Módulo (m)</label>
                         <input name="modulo" type="number" class="form-control" id="validationDefault01" required>
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="validationDefault01">Tipo de archivo</label>
+                        <select name="tipoarchivo" required>
+                            <option value="">---</option>
+                            <option value="1">Excel</option> 
+                            <option value="2">csv </option> 
+                            <option value="3">json</option>
+                            
+                        </select>
+                    </div>
                 </div>
-                <button class="btn btn-primary" type="submit">Subir</button>
-                <!-- <a class="btn btn-success float-right" href="{{url_for('static', filename='file/template4.xlsx')}}"
-                    role="button">Descargar plantilla</a> -->
+                <button class="btn btn-danger" type="submit">Calcular</button>
             </div>
         </form><br>
     </div>
@@ -68,6 +88,10 @@
 <div class="container">
     <legend class="text-left header">Tabla de resultados</legend>
     {{data|safe}}
+</div>
+<div class="container col-md-6 mb-3">
+    <h3 class="">El total de ventas es {{data3|safe}} </h3>
+    
 </div>
 
 <div class="container">

@@ -1,3 +1,4 @@
+from io import StringIO
 from os import write
 import re
 from flask import Flask, render_template, request, send_file
@@ -856,8 +857,7 @@ def calcularRegresionLinealCuadrada():
     yy = xx2*y
     yy
 
-    df3 = pd.DataFrame({"X": x, "Y": y, "XX": xx2, "X3": xx3,
-                       "X4": xx4, "XY": xy, "X2Y": yy})
+    df3 = pd.DataFrame({"X": x, "Y": y, "XX": xx2, "X3": xx3,"X4": xx4, "XY": xy, "X2Y": yy})
     df3
 
     total1 = df3['XX'].sum()
@@ -924,11 +924,15 @@ def printSistemaMontecarlo():
 
 @app.route('/calcularMontecarlo', methods=['GET', 'POST'])
 def calcularMontecarlo():
-    n = request.form.get("numeroIteraciones", type=int)
-    x0 = request.form.get("semilla", type=int)
-    a = request.form.get("multiplicador", type=int)
-    c = request.form.get("incremento", type=int)
-    m = request.form.get("modulo", type=int)
+    tipoArch= request.form.get("tipoarchivo")
+    n1 = request.form.get("numeroIteraciones", type=int)
+    x01 = request.form.get("semilla", type=int)
+    a1 = request.form.get("multiplicador", type=int)
+    c1 = request.form.get("incremento", type=int)
+    m1 = request.form.get("modulo", type=int)
+
+    pago = request.form.get("x")
+    probabilidad = request.form.get("y")
 
     file = request.files['file'].read()
 
@@ -943,99 +947,130 @@ def calcularMontecarlo():
     from io import BytesIO
     import base64
     from pandas import DataFrame
+    import itertools
+    import pandas as pd
+    import math
 
-    file = pd.read_excel(file)
-    tot = pd.DataFrame(file)
+
+    if tipoArch=='1':
+        
+        file = pd.read_excel(file)
+        
+        
+    elif tipoArch=='2':
+        file = pd.read_csv(io.StringIO(file.decode('utf-8')))
+        
+    elif tipoArch=='3':
+        file = pd.read_json(file)
+
+    # file = pd.read_excel(file)
+    # tot = pd.DataFrame(file)
     #x = a["X"]
     #tot = a["Y"]
 
-    # Generamos los 62 # aleatorios por cualquiera de los métodos estudiados y luego podemos realizar la simulación
-    # Generador de números aleatorios Congruencia lineal
-    # Borland C/C++ xi+1=22695477xi + 1 mod 2^32
-    #n, m, a, x0, c = 52, 2**32, 22695477, 4, 1
+    # datos = {
+    # 'Pago' : [0,500,1000,2000,5000,8000,10000],
+    # 'Probabilidad': [0.83,0.06,0.05,0.02,0.02,0.01,0.01]
+    # }
+    df = pd.DataFrame(file)
+    # Array para guardar los resultados
+    dataArray = []
+    # Suma de probabilidad
+    sumProbabilidad = np.cumsum(df[probabilidad])
+    df['FDP'] = sumProbabilidad
+    # Obtenemos los datos mínimos
+    datosMin = df['FDP']+0.001
+    # Obtenemos los datos máximos
+    datosMax = df['FDP']
+    # Asignamos al DataFrame
+    df['Min'] = datosMin
+    df['Max'] = datosMax
+    # Se establecen correctamente los datos mínimos
+    df['Min'] = df['Min'].shift(periods=1, fill_value=0)
+    df
+        # n = Cantidad de tenedores de pólizas
+    n = n1
+    m = m1 # 2**32
+    a = a1
+    x0 = x01
+    c = c1
+    # Obtenemos los resultados
     x = [1] * n
     r = [0.1] * n
     for i in range(0, n):
         x[i] = ((a*x0)+c) % m
         x0 = x[i]
         r[i] = x0 / m
-    # llenamos nuestro DataFrame
-    d = {'ri': r}
+    # llenamos el DataFrame
+    d = {'ri': r }
     dfMCL = pd.DataFrame(data=d)
     dfMCL
 
-    # Ordenamos por Día
-    suma = tot['Y'].sum()
-    n = len(tot)
-    suma
-    x1 = tot.assign(Probabilidad=lambda x: x['Y'] / suma)
-    x2 = x1.sort_values('X')
-    a = x2['Probabilidad']
-    a
+    # Valores máximos
+    max = df['Max'].values
+    # Valores mínimos
+    min = df['Min'].values
+    # Definimos el número de pagos
+    n = 32
+    
+    # df = pd.DataFrame(df)
 
-    a1 = np.cumsum(a)  # Cálculo la suma acumulativa de las probabilidades
-    x2['FPA'] = a1
-    x2
-
-    x2['Min'] = x2['FPA']
-    x2['Max'] = x2['FPA']
-    x2
-
-    lis = x2["Min"].values
-    lis2 = x2['Max'].values
-    lis[0] = 0
-    for i in range(1, 7):
-        lis[i] = lis2[i-1]
-    x2['Min'] = lis
-    x2
-
-    max = x2['Max'].values
-    min = x2['Min'].values
-
-    x2
-
-    x2 = pd.DataFrame(x2)
-
-    data = x2.to_html(classes="table table-hover table-striped",
-                      justify="justify-all", border=0)
-
+    # data1 = dffx.to_html(classes="table table-hover table-striped", justify="justify-all", border=0)
+    
+    # Función de búsqueda
     def busqueda(arrmin, arrmax, valor):
-        #print(valor)
-        for i in range(len(arrmin)):
-            # print(arrmin[i],arrmax[i])
+        
+        for i in range (len(arrmin)):
             if valor >= arrmin[i] and valor <= arrmax[i]:
                 return i
-
+     #print(i)
         return -1
     xpos = dfMCL['ri']
     posi = [0] * n
-
+    #print (n)
     for j in range(n):
         val = xpos[j]
-        pos = busqueda(min, max, val)
+        pos = busqueda(min,max,val)
         posi[j] = pos
-    x2 = x2.astype({"X": int})
-
-    import itertools
-    import math
+     # Definiendo un índice para simular datos
+    ind = [1,2,3,4,5,6,7]
+    df["Indice"] = ind
+    # Ordenamos el DataFrame
+    df = df[['Indice',pago,probabilidad,'FDP','Min','Max']]
+     # Array para guardar los datos
     simula = []
     for j in range(n):
         for i in range(n):
-            sim = x2.loc[x2["X"] == posi[i]+1]
-            simu = sim.filter(['Y']).values
+            sim = df.loc[df["Indice"]== posi[i]+1 ]
+            simu = sim.filter([pago]).values
             iterator = itertools.chain(*simu)
+                      
             for item in iterator:
-                a = item
-            simula.append(round(a, 2))
-    simula
-
+                a=item
+            simula.append(round(a,2))
+     # Insertamos en el DataFrame los datos de simulación
     dfMCL["Simulación"] = pd.DataFrame(simula)
-    dfMCL["Costo de Atención"] = dfMCL["Simulación"] * 50
+    # Sumamos 39 ya que el precio de la acción actual es de 39
+    dfMCL["Pagos a tenedor"] = dfMCL["Simulación"]
+ # Suma de Pagos a tenedor
+    data = dfMCL['Pagos a tenedor'].sum()
+    dataArray.append(data)
+
+ # Imprimir resultado
+    print('Suma de los pagos al tenedor:', data)
+    # dat = pd.DataFrame(data)
+    # prin_='Suma de los pagos al tenedor: ',data
+    # data01=data
+    # data01=str(data01)
+    # data3=dat.to_html(
+    #     classes="col-md-6 mb-3", justify="justify-all")
     dfMCL
+
+    
 
     buf = io.BytesIO()
     plt.plot(dfMCL['Simulación'], label='Simulación')
-    plt.plot(dfMCL['Costo de Atención'], label='Costo de Atención')
+    plt.plot(dfMCL['Pagos a tenedor'], label='Costo de Atención')
     plt.legend()
 
     fig = plt.gcf()
@@ -1044,6 +1079,15 @@ def calcularMontecarlo():
     fig.clear()
     plot_url = base64.b64encode(buf.getvalue()).decode('UTF-8')
 
+    data1 = df.to_html(
+        classes="table table-hover table-striped", justify="justify-all", border=0)
+
+    """ writer = ExcelWriter("static/file/data.xlsx")
+    dfMCL.to_excel(writer, index=False)
+    writer.save()
+
+    dfMCL.to_csv("static/file/data.csv", index=False)
+    """
     data2 = dfMCL.to_html(
         classes="table table-hover table-striped", justify="justify-all", border=0)
 
@@ -1053,7 +1097,50 @@ def calcularMontecarlo():
 
     dfMCL.to_csv("static/file/data.csv", index=False)
     """
-    return render_template('printSistemaMontecarlo.html', data=data, data2=data2, image=plot_url)
+    # data3 = data.to_html(
+    #     classes="table table-hover table-striped", justify="justify-all", border=0)
+
+    # """ writer = ExcelWriter("static/file/data.xlsx")
+    # dfMCL.to_excel(writer, index=False)
+    # writer.save()
+
+    # dfMCL.to_csv("static/file/data.csv", index=False)
+    # """
+    return render_template('printSistemaMontecarlo.html', data=data1, data2=data2,data3=data, image=plot_url)
+    # def busqueda(arrmin, arrmax, valor):
+    #     #print(valor)
+    #     for i in range(len(arrmin)):
+    #         # print(arrmin[i],arrmax[i])
+    #         if valor >= arrmin[i] and valor <= arrmax[i]:
+    #             return i
+
+    #     return -1
+    # xpos = dfMCL['ri']
+    # posi = [0] * n
+
+    # for j in range(n):
+    #     val = xpos[j]
+    #     pos = busqueda(min, max, val)
+    #     posi[j] = pos
+    # x2 = x2.astype({"X": int})
+
+    # import itertools
+    # import math
+    # simula = []
+    # for j in range(n):
+    #     for i in range(n):
+    #         sim = x2.loc[x2["X"] == posi[i]+1]
+    #         simu = sim.filter(['Y']).values
+    #         iterator = itertools.chain(*simu)
+    #         for item in iterator:
+    #             a = item
+    #         simula.append(round(a, 2))
+    # simula
+
+    # dfMCL["Simulación"] = pd.DataFrame(simula)
+    # dfMCL["Costo de Atención"] = dfMCL["Simulación"] * 50
+    # dfMCL
+
 
 
 @app.route('/sistemaInventario')

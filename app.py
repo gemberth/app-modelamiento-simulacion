@@ -626,6 +626,10 @@ def imprimirRegresionLineal():
 @app.route('/calcularRegresionLineal', methods=['GET', 'POST'])
 def calcularRegresionLineal():
     file = request.files['file'].read()
+    tipoArch= request.form.get("tipoarchivo")
+
+    columna01 = request.form.get("x")
+    columna02 = request.form.get("y")
 
     import pandas as pd
     import numpy as np
@@ -641,10 +645,58 @@ def calcularRegresionLineal():
     # el DataFrame se llama movil
     # exporta = {'Año':[2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017],
     #           'Exportaciones':[5501.0, 6232.7, 8118.3, 10137.00, 10449.50, 12794.60, 9939.10, 13193.00, 16036.2, 18496.90, 18709.30, 19363.50, 16521.50, 15175.40, 16927.00]}
-    file = pd.read_excel(file)
+    # *** Leer el archivo ***
+    if tipoArch=='1':
+        
+        file = pd.read_excel(file)
+        
+        
+    elif tipoArch=='2':
+        file = pd.read_csv(io.StringIO(file.decode('utf-8')))
+        
+    elif tipoArch=='3':
+        file = pd.read_json(file)
+
+    elif tipoArch=='4':
+        file = pd.read_html(file)
+    elif tipoArch=='5':
+        file = pd.read_clipboard(file)
+
+    elif tipoArch=='6':
+        file = pd.read_feather(file)
+
+    elif tipoArch=='7':
+        file = pd.read_fwf(file)
+
+    elif tipoArch=='8':
+        file = pd.read_gbq(file)
+
+    elif tipoArch=='9':
+        file = pd.read_parquet(file)
+
+    elif tipoArch=='10':
+        file = pd.read_pickle(file)
+
+    elif tipoArch=='11':
+        file = pd.read_msgpack(file)
+
+    elif tipoArch=='12':
+        file = pd.read_sas(file)
+
+    elif tipoArch=='13':
+        file = pd.read_sql(file)
+
+    elif tipoArch=='14':
+        file = pd.read_sql_query(file)
+    elif tipoArch=='15':
+        file = pd.read_sql_table(file)
+
+
     a = pd.DataFrame(file)
-    x = a["X"]
-    y = a["Y"]
+
+
+    x = a[columna01]
+    y = a[columna02]
     
     # ajuste de la recta (polinomio de grado 1 f(x) = ax + b)
     p = np.polyfit(x, y, 1)  # 1 para lineal, 2 para polinomio ...
@@ -720,6 +772,11 @@ def imprimirRegresionLinealCuadrada():
 def calcularRegresionLinealCuadrada():
     file = request.files['file'].read()
 
+    tipoArch= request.form.get("tipoarchivo")
+
+    columna01 = request.form.get("x")
+    columna02 = request.form.get("y")
+
     import pandas as pd
     import numpy as np
     import matplotlib.pyplot as plt
@@ -731,13 +788,57 @@ def calcularRegresionLinealCuadrada():
     from io import BytesIO
     import base64
 
-    # el DataFrame se llama movil
-    # exporta = {'Año':[2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017],
-    #           'Exportaciones':[5501.0, 6232.7, 8118.3, 10137.00, 10449.50, 12794.60, 9939.10, 13193.00, 16036.2, 18496.90, 18709.30, 19363.50, 16521.50, 15175.40, 16927.00]}
-    file = pd.read_excel(file)
+    if tipoArch=='1':
+        
+        file = pd.read_excel(file)
+        
+        
+    elif tipoArch=='2':
+        file = pd.read_csv(io.StringIO(file.decode('utf-8')))
+        
+    elif tipoArch=='3':
+        file = pd.read_json(file)
+
+    elif tipoArch=='4':
+        file = pd.read_html(file)
+    elif tipoArch=='5':
+        file = pd.read_clipboard(file)
+
+    elif tipoArch=='6':
+        file = pd.read_feather(file)
+
+    elif tipoArch=='7':
+        file = pd.read_fwf(file)
+
+    elif tipoArch=='8':
+        file = pd.read_gbq(file)
+
+    elif tipoArch=='9':
+        file = pd.read_parquet(file)
+
+    elif tipoArch=='10':
+        file = pd.read_pickle(file)
+
+    elif tipoArch=='11':
+        file = pd.read_msgpack(file)
+
+    elif tipoArch=='12':
+        file = pd.read_sas(file)
+
+    elif tipoArch=='13':
+        file = pd.read_sql(file)
+
+    elif tipoArch=='14':
+        file = pd.read_sql_query(file)
+    elif tipoArch=='15':
+        file = pd.read_sql_table(file)
+
+
     a = pd.DataFrame(file)
-    x = a["X"]
-    y = a["Y"]
+
+
+    x = a[columna01]
+    y = a[columna02]
     # ajuste de la recta (polinomio de grado 1 f(x) = ax + b)
     pp = np.polyfit(x, y, 2)
     pp0, pp1, pp2 = pp
@@ -855,9 +956,9 @@ def calcularMontecarlo():
     x = [1] * n
     r = [0.1] * n
     for i in range(0, n):
-     x[i] = ((a*x0)+c) % m
-     x0 = x[i]
-     r[i] = x0 / m
+        x[i] = ((a*x0)+c) % m
+        x0 = x[i]
+        r[i] = x0 / m
     # llenamos nuestro DataFrame
     d = {'ri': r}
     dfMCL = pd.DataFrame(data=d)
@@ -884,7 +985,7 @@ def calcularMontecarlo():
     lis2 = x2['Max'].values
     lis[0] = 0
     for i in range(1, 7):
-     lis[i] = lis2[i-1]
+        lis[i] = lis2[i-1]
     x2['Min'] = lis
     x2
 
@@ -951,7 +1052,7 @@ def calcularMontecarlo():
     writer.save()
 
     dfMCL.to_csv("static/file/data.csv", index=False)
- """
+    """
     return render_template('printSistemaMontecarlo.html', data=data, data2=data2, image=plot_url)
 
 
